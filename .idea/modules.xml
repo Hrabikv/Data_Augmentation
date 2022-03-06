@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Data_Augmentation.iml" filepath="$PROJECT_DIR$/.idea/Data_Augmentation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Data_Augmentation/.idea/Data_Augmentation.iml" filepath="$PROJECT_DIR$/../Data_Augmentation/.idea/Data_Augmentation.iml" />
     </modules>
   </component>
 </project>
