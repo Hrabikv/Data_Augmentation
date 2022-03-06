@@ -4,18 +4,22 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import numpy as np
 import h5py
+from scipy.io import loadmat
 
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
     print("ahoj")
+    #f = h5py.File('VarekaGTNEpochs.mat', 'r')
+    #data = f.get('data/variable1')
+    #data = np.array(data)
+
+    data = loadmat('VarekaGTNEpochs.mat')
+    print(data["allNonTargetData"][0])
 
 
-# f = h5py.File('../materialy/VarekaGTNEpochs.mat', 'r')
-# data = f.get('data/variable1')
-# data = np.array(data)
-# print(data)
+
 
 
 # Press the green button in the gutter to run the script.
