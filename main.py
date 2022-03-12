@@ -61,7 +61,8 @@ if __name__ == '__main__':
     # print_graph(dataset)
     target_gan = GAN()
     # print_graph(dataset["allNonTargetData"])
-    target_gan.train(epochs=50000, dataset=dataset.get("target"), batch_size=32, save_interval=1000)
+    target_gan.train(epochs=50000, dataset=dataset.get("target"), name="target",
+                     batch_size=32, save_interval=1000)
 
     new_target_data = target_gan.predict(dataset.get("target"), 150)
 
@@ -70,7 +71,8 @@ if __name__ == '__main__':
 
     non_target_gan = GAN()
 
-    non_target_gan.train(epochs=50000, dataset=dataset.get("non_target"), batch_size=32, save_interval=1000)
+    non_target_gan.train(epochs=50000, dataset=dataset.get("non_target"), name="non_target",
+                         batch_size=32, save_interval=1000)
 
     new_non_target_data = non_target_gan.predict(dataset.get("non_target"), 150)
 

@@ -72,7 +72,7 @@ class GAN:
 
         self.max_number = max_number
 
-    def train(self, epochs, dataset, batch_size=64, save_interval=50):
+    def train(self, epochs, dataset, name, batch_size=64, save_interval=50):
 
         for i in range(len(dataset)):
             for j in range(len(dataset[0])):
@@ -118,11 +118,9 @@ class GAN:
             # If at save interval => save generated image samples
             if epoch % save_interval == 0:
                 print("%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100 * d_loss[1], g_loss))
-                self.save_data_img(epoch)
+                self.save_data_img(epoch, name)
 
-        self.save_data_img(epoch)
-
-    def save_data_img(self, epoch):
+    def save_data_img(self, epoch, name):
         rows = 3
         noise = np.random.normal(0, 1, (rows, 1000))
         gen_images = self.generator.predict(noise)
@@ -132,23 +130,13 @@ class GAN:
                 for k in range(len(gen_images[0][0])):
                     gen_images[i][j][k] = up_scale(gen_images[i][j][k])
 
-        '''
-        file_object = open('training/P300_%d.txt' % epoch, 'w')
-        for element in gen_images:
-            for array in element:
-                for digit in array:
-                    file_object.write('{:.1f} | '.format(self.up_scale(digit)))
-                file_object.write("\n\n")
-            file_object.write("-------------------------------------\n\n")
-        file_object.close()
-        '''
         for i in range(rows):
             fig, axs = plt.subplots(1, rows)
 
             for j in range(rows):
                 axs[j].plot(gen_images[i][j])
 
-            fig.savefig("training/P300_{0}_{1}.png".format(epoch, i))
+            fig.savefig("training/{0}/P300_{0}_{1}.png".format(name, epoch, i))
         plt.close()
 
     def save_model(self, name):

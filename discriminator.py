@@ -8,7 +8,7 @@ from keras.layers import Flatten
 # function for building the discriminator layers
 def build_discriminator(img_shape):
 
-    model = Sequential(name="disriminator")
+    model = Sequential(name="discriminator")
 
     model.add(Flatten(input_shape=img_shape))
     model.add(Dense(1800))

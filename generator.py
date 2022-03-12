@@ -1,5 +1,5 @@
 import numpy as np
-from keras.layers import Reshape, BatchNormalization, Input, Dense
+from keras.layers import Reshape, Input, Dense
 from keras.models import Model
 from keras import Sequential
 from keras.layers.advanced_activations import LeakyReLU
