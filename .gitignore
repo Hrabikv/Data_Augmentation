@@ -2,3 +2,5 @@
 /training
 /images
 /images-2
+/non_target_gen.h5
+/target_gen.h5

@@ -22,6 +22,7 @@ def down_scale(number):
 
 class GAN:
     def __init__(self):
+        self.vector_size = 1000
         self.max_number = 0
         self.img_rows = 3
         self.img_cols = 1200
@@ -34,11 +35,11 @@ class GAN:
         self.discriminator.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
         # Build and compile the generator
-        self.generator = build_generator(self.img_shape)
+        self.generator = build_generator(self.img_shape, self)
         self.generator.compile(loss='binary_crossentropy', optimizer=optimizer)
 
         # The generator takes noise as input and generated images
-        z = Input(shape=(1000,))
+        z = Input(shape=(self.vector_size,))
         img = self.generator(z)
 
         # For the combined model we will only train the generator
@@ -52,14 +53,15 @@ class GAN:
         self.combined = Model(z, valid)
         self.combined.compile(loss='binary_crossentropy', optimizer=optimizer)
 
-    def predict(self, data, percentage=200):
+    def predict(self, data_len, percentage=200):
 
-        number_of_new = len(data) * percentage / 100
-        noise = np.random.normal(0, 1, (int(number_of_new), 1000))
+        number_of_new = (data_len * percentage / 100) - data_len
+        noise = np.random.normal(0, 1, (int(number_of_new), self.vector_size))
 
         gen_data = self.generator.predict(noise)
-
-        return np.concatenate(data, gen_data)
+        gen_data = np.array(gen_data)
+        print(gen_data.shape)
+        return gen_data
 
     def find_max(self, data):
         max_number = 0
@@ -90,7 +92,7 @@ class GAN:
             idx = np.random.randint(0, dataset.shape[0], half_batch)
             images = dataset[idx]
 
-            noise = np.random.normal(0, 1, (half_batch, 1000))
+            noise = np.random.normal(0, 1, (half_batch, self.vector_size))
 
             # Generate a half batch of new images
             gen_images = self.generator.predict(noise)
@@ -104,7 +106,7 @@ class GAN:
             #  Train Generator
             # ---------------------
 
-            noise = np.random.normal(0, 1, (batch_size, 1000))
+            noise = np.random.normal(0, 1, (batch_size, self.vector_size))
 
             # The generator wants the discriminator to label the generated samples
             # as valid (ones)
@@ -122,7 +124,7 @@ class GAN:
 
     def save_data_img(self, epoch, name):
         rows = 3
-        noise = np.random.normal(0, 1, (rows, 1000))
+        noise = np.random.normal(0, 1, (rows, self.vector_size))
         gen_images = self.generator.predict(noise)
 
         for i in range(len(gen_images)):
@@ -136,7 +138,7 @@ class GAN:
             for j in range(rows):
                 axs[j].plot(gen_images[i][j])
 
-            fig.savefig("training/{0}/P300_{0}_{1}.png".format(name, epoch, i))
+            fig.savefig("training/{0}/P300_{1}_{2}.png".format(name, epoch, i))
         plt.close()
 
     def save_model(self, name):

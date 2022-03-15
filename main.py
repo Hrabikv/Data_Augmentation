@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 
 from GAN import GAN
+from Data_set import Data_set
 
 
 def print_graph(data):
-    print(data.shape)
+    # print(data.shape)
     '''
     file_object = open('image.txt', 'a')
     for element in data["allNonTargetData"]:
@@ -56,28 +57,47 @@ def load_data(name):
     return data_set
 
 
+def merge_data(dataset, gen_data):
+    pom_list = []
+
+    for i in range(len(dataset)):
+        pom_list.append(dataset[i])
+
+    for i in range(len(gen_data)):
+        pom_list.append(gen_data[i])
+
+    return np.array(pom_list)
+
+
 if __name__ == '__main__':
-    dataset = load_data('VarekaGTNEpochs.mat')
+
+    data = Data_set()
+    dataset = data.load_data()
+
     # print_graph(dataset)
     target_gan = GAN()
+    target_gan.load_model("target_gen.h5")
     # print_graph(dataset["allNonTargetData"])
-    target_gan.train(epochs=50000, dataset=dataset.get("target"), name="target",
-                     batch_size=32, save_interval=1000)
+    # gen_target_data target_gan.train(epochs=50000, dataset=dataset.get("target"), name="target",
+    #                  batch_size=32, save_interval=1000)
+    # target_gan.save_model("target_gen.h5")
+    gen_target_data = target_gan.predict(len(dataset.get("target")), 150)
 
-    new_target_data = target_gan.predict(dataset.get("target"), 150)
+    new_target_data = merge_data(dataset.get("target"), gen_target_data)
 
     print(dataset.get("target").shape)
     print(new_target_data.shape)
 
     non_target_gan = GAN()
+    non_target_gan.load_model("non_target_gen.h5")
+    # non_target_gan.train(epochs=50000, dataset=dataset.get("non_target"), name="non_target",
+    #                     batch_size=32, save_interval=1000)
+    # non_target_gan.save_model("non_target_gen.h5")
+    gen_non_target_data = non_target_gan.predict(len(dataset.get("non_target")), 150)
 
-    non_target_gan.train(epochs=50000, dataset=dataset.get("non_target"), name="non_target",
-                         batch_size=32, save_interval=1000)
-
-    new_non_target_data = non_target_gan.predict(dataset.get("non_target"), 150)
+    new_non_target_data = merge_data(dataset.get("non_target"), gen_non_target_data)
 
     print(dataset.get("non_target").shape)
     print(new_non_target_data.shape)
+    data.save_data(new_target_data, new_non_target_data)
 
-    target_gan.save_model("target_gen.h5")
-    non_target_gan.save_model("non_target_gen.h5")
