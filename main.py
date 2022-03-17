@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import loadmat
@@ -26,7 +28,7 @@ def print_graph(data):
         axs[0].plot(element[0])
         axs[1].plot(element[1])
         axs[2].plot(element[2])
-        fig.savefig("images/P300_%d.png" % index)
+        fig.savefig("generated/P300_%d.png" % index)
         plt.close()
         index += 1
 
@@ -70,6 +72,7 @@ def merge_data(dataset, gen_data):
 
 
 if __name__ == '__main__':
+    percentage = sys.argv[1]
 
     data = Data_set()
     dataset = data.load_data()
@@ -81,23 +84,23 @@ if __name__ == '__main__':
     # gen_target_data target_gan.train(epochs=50000, dataset=dataset.get("target"), name="target",
     #                  batch_size=32, save_interval=1000)
     # target_gan.save_model("target_gen.h5")
-    gen_target_data = target_gan.predict(len(dataset.get("target")), 150)
-
+    gen_target_data = target_gan.predict(len(dataset.get("target")), int(percentage))
+    print_graph(gen_target_data)
     new_target_data = merge_data(dataset.get("target"), gen_target_data)
 
-    print(dataset.get("target").shape)
-    print(new_target_data.shape)
+    # print(dataset.get("target").shape)
+    # print(new_target_data.shape)
 
     non_target_gan = GAN()
     non_target_gan.load_model("non_target_gen.h5")
     # non_target_gan.train(epochs=50000, dataset=dataset.get("non_target"), name="non_target",
     #                     batch_size=32, save_interval=1000)
     # non_target_gan.save_model("non_target_gen.h5")
-    gen_non_target_data = non_target_gan.predict(len(dataset.get("non_target")), 150)
+    gen_non_target_data = non_target_gan.predict(len(dataset.get("non_target")), int(percentage))
 
     new_non_target_data = merge_data(dataset.get("non_target"), gen_non_target_data)
 
-    print(dataset.get("non_target").shape)
-    print(new_non_target_data.shape)
-    data.save_data(new_target_data, new_non_target_data)
+    # print(dataset.get("non_target").shape)
+    # print(new_non_target_data.shape)
+    data.save_data(new_target_data, new_non_target_data, "VarekaGTNEpochs{0}.mat".format(percentage))
 

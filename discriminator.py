@@ -17,7 +17,7 @@ def build_discriminator(img_shape):
     model.add(LeakyReLU(alpha=0.2))
     model.add(Dense(1, activation='sigmoid'))
 
-    model.summary()
+    # model.summary()
 
     img = Input(shape=img_shape)
     validity = model(img)

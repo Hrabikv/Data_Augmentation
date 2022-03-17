@@ -29,11 +29,13 @@ class Data_set:
             print(data_set.get(data).shape)
         return data_set
 
-    def save_data(self, new_gen_target, new_gen_non_target):
+    def save_data(self, new_gen_target, new_gen_non_target, file_name):
         self.data["allTargetData"] = new_gen_target
         self.data["allNonTargetData"] = new_gen_non_target
 
+        print("allTerget:")
         print(self.data["allTargetData"].shape)
+        print("allNonTerget:")
         print(self.data["allNonTargetData"].shape)
 
-        savemat("test.mat", self.data)
+        savemat(file_name, self.data)

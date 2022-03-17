@@ -17,7 +17,7 @@ def build_generator(img_shape, gan):
     model.add(Dense(np.prod(img_shape), activation='tanh'))
     model.add(Reshape(img_shape))
 
-    model.summary()
+    # model.summary()
 
     noise = Input(shape=noise_shape)
     img = model(noise)
