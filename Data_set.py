@@ -33,9 +33,7 @@ class Data_set:
         self.data["allTargetData"] = new_gen_target
         self.data["allNonTargetData"] = new_gen_non_target
 
-        print("allTerget:")
         print(self.data["allTargetData"].shape)
-        print("allNonTerget:")
         print(self.data["allNonTargetData"].shape)
 
         savemat(file_name, self.data)

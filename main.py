@@ -28,7 +28,7 @@ def print_graph(data):
         axs[0].plot(element[0])
         axs[1].plot(element[1])
         axs[2].plot(element[2])
-        fig.savefig("generated/P300_%d.png" % index)
+        fig.savefig("images/P300_%d.png" % index)
         plt.close()
         index += 1
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     #                  batch_size=32, save_interval=1000)
     # target_gan.save_model("target_gen.h5")
     gen_target_data = target_gan.predict(len(dataset.get("target")), int(percentage))
-    print_graph(gen_target_data)
+
     new_target_data = merge_data(dataset.get("target"), gen_target_data)
 
     # print(dataset.get("target").shape)
@@ -102,5 +102,5 @@ if __name__ == '__main__':
 
     # print(dataset.get("non_target").shape)
     # print(new_non_target_data.shape)
-    data.save_data(new_target_data, new_non_target_data, "VarekaGTNEpochs{0}.mat".format(percentage))
+    data.save_data(new_target_data, new_non_target_data, "VarekaGTNEpochs{0}.mat".format(int(percentage)))
 

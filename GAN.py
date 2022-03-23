@@ -118,6 +118,7 @@ class GAN:
             # Plot the progress
 
             # If at save interval => save generated image samples
+
             if epoch % save_interval == 0:
                 print("%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100 * d_loss[1], g_loss))
                 self.save_data_img(epoch, name)
@@ -140,6 +141,7 @@ class GAN:
 
             fig.savefig("training/{0}/P300_{1}_{2}.png".format(name, epoch, i))
         plt.close()
+
 
     def save_model(self, name):
         self.generator.save(name)
