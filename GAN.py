@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from keras.optimizers import Adam
 from keras.layers import Input
 from keras.models import Model
-from generator import build_generator
+from generator import build_generator_mk_2
 from discriminator import build_discriminator
 
 
@@ -22,7 +22,7 @@ def down_scale(number):
 
 class GAN:
     def __init__(self):
-        self.vector_size = 1000
+        self.vector_size = 225
         self.max_number = 0
         self.img_rows = 3
         self.img_cols = 1200
@@ -35,7 +35,7 @@ class GAN:
         self.discriminator.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
         # Build and compile the generator
-        self.generator = build_generator(self.img_shape, self)
+        self.generator = build_generator_mk_2(self.img_shape, self)
         self.generator.compile(loss='binary_crossentropy', optimizer=optimizer)
 
         # The generator takes noise as input and generated images

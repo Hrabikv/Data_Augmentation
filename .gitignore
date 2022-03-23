@@ -3,9 +3,5 @@
 /images
 /images-2
 /generated
-/non_target_gen.h5
-/target_gen.h5
-/test.mat
-/VarekaGTNEpochs150.mat
-/VarekaGTNEpochs350.mat
-/VarekaGTNEpochs450.mat
+/non_target_gan.h5
+/target_gan.h5

@@ -2,7 +2,19 @@ import numpy as np
 from scipy.io import loadmat, savemat
 
 
-class Data_set:
+def merge_data(dataset, gen_data):
+    pom_list = []
+
+    for i in range(len(dataset)):
+        pom_list.append(dataset[i])
+
+    for i in range(len(gen_data)):
+        pom_list.append(gen_data[i])
+
+    return np.array(pom_list)
+
+
+class FileWorker:
     def __init__(self):
         self.data = loadmat("VarekaGTNEpochs.mat")
 
