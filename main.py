@@ -5,6 +5,7 @@ from GAN import GAN
 from DataWork import FileWorker, merge_data
 
 
+# Function for print graphs from input data
 def print_graph(raw_data):
     # print(data.shape)
     '''
@@ -30,18 +31,25 @@ def print_graph(raw_data):
         index += 1
 
 
+# Function which train GAN on input data
+# after training procedure trained GAN will be saved
+# returns two model of GAN after training
 def training(data_set):
+    # Training of data from "target" class
     target = GAN()
     target.train(epochs=50000, dataset=data_set.get("target"), name="target",
                  batch_size=32, save_interval=1000)
-    target.save_model("target_gan.h5")
+    target.save_model("target_gan.h5")  # Saving of trained model for "target" class
+    # Training of data from "non_target" class"
     non_target = GAN()
     non_target.train(epochs=50000, dataset=data_set.get("non_target"), name="non_target",
                      batch_size=32, save_interval=1000)
-    non_target.save_model("non_target_gan.h5")
+    non_target.save_model("non_target_gan.h5")  # Saving of trained model "non_target" class
     return target, non_target
 
 
+# Function which load saved model of GAN
+# returns two models of GAN with trained generators
 def load_model(target_model_name, non_target_model_name):
     target = GAN()
     target.load_model(target_model_name)
@@ -50,6 +58,8 @@ def load_model(target_model_name, non_target_model_name):
     return target, non_target
 
 
+# Function for predictions of data
+# predicted data are merged with input data and saved into new file
 def predict(file_worker, target, non_target, percentage, data_set):
     gen_target_data = target.predict(len(data_set.get("target")), int(percentage))
     new_target_data = merge_data(data_set.get("target"), gen_target_data)
@@ -58,6 +68,7 @@ def predict(file_worker, target, non_target, percentage, data_set):
     file_worker.save_data(new_target_data, new_non_target_data, "VarekaGTNEpochs{0}.mat".format(int(percentage)))
 
 
+# Function which process arguments from command line
 def process_args():
     symptoms = {}
     previous = ""
@@ -85,6 +96,8 @@ def process_args():
     return symptoms
 
 
+# Main function of program
+# entry point of the program
 if __name__ == '__main__':
     args = process_args()
     file = FileWorker()

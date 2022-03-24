@@ -22,11 +22,10 @@ def down_scale(number):
 
 class GAN:
     def __init__(self):
-        self.vector_size = 225
-        self.max_number = 0
-        self.img_rows = 3
-        self.img_cols = 1200
-        self.img_shape = (self.img_rows, self.img_cols)
+        self.vector_size = 225  # Size of random vector
+        self.img_rows = 3  # Number of channels of input data
+        self.img_cols = 1200  # number of values in one channel
+        self.img_shape = (self.img_rows, self.img_cols)  # Shape of one signal in ínput data
 
         optimizer = Adam(0.0002, 0.5)
 
@@ -53,8 +52,8 @@ class GAN:
         self.combined = Model(z, valid)
         self.combined.compile(loss='binary_crossentropy', optimizer=optimizer)
 
+    # Function to determine new signals
     def predict(self, data_len, percentage=200):
-
         number_of_new = (data_len * percentage / 100) - data_len
         noise = np.random.normal(0, 1, (int(number_of_new), self.vector_size))
 
@@ -63,17 +62,7 @@ class GAN:
         print(gen_data.shape)
         return gen_data
 
-    def find_max(self, data):
-        max_number = 0
-        for element in data:
-            for array in element:
-                for digit in array:
-                    if abs(digit) > max_number:
-                        max_number = abs(digit)
-                        print(max_number)
-
-        self.max_number = max_number
-
+    # Function which train GAN for number of epochs
     def train(self, epochs, dataset, name, batch_size=64, save_interval=50):
 
         for i in range(len(dataset)):
@@ -123,6 +112,7 @@ class GAN:
                 print("%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100 * d_loss[1], g_loss))
                 self.save_data_img(epoch, name)
 
+    # Function for print image of predicted signals
     def save_data_img(self, epoch, name):
         rows = 3
         noise = np.random.normal(0, 1, (rows, self.vector_size))
@@ -142,9 +132,10 @@ class GAN:
             fig.savefig("training/{0}/P300_{1}_{2}.png".format(name, epoch, i))
         plt.close()
 
-
+    # Function for saving the GAN
     def save_model(self, name):
         self.generator.save(name)
 
+    # Function for saving the GAN
     def load_model(self, name):
         self.generator = keras.models.load_model(name)
