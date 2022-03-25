@@ -1,6 +1,6 @@
 import sys
 import matplotlib.pyplot as plt
-
+import numpy as np
 from GAN import GAN
 from DataWork import FileWorker, merge_data
 
@@ -109,11 +109,16 @@ if __name__ == '__main__':
     if args.keys().__contains__("training"):
         if args["training"] == "y":
             target_gan, non_target_gan = training(dataset)
+            print("Training is done.")
 
     if args.keys().__contains__("percentage"):
         if args.keys().__contains__("non_target") & args.keys().__contains__("target"):
             target_gan, non_target_gan = load_model(args["target"], args["non_target"])
             predict(file, target_gan, non_target_gan, args["percentage"], dataset)
+            print("Predicting is done.")
+        else:
+            print("Models of generator are missing!!")
+            print("Check README.txt for right parameters!!")
 
 '''
     percentage = sys.argv[1]

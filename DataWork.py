@@ -23,7 +23,8 @@ class FileWorker:
     # Function for prepare input data
     # are filtered of values above 100 uV
     def load_data(self):
-        target_data, non_target_data = self.data["allTargetData"], self.data["allNonTargetData"]  # get target and non-target data
+        target_data, non_target_data = self.data["allTargetData"], self.data["allNonTargetData"]  # get target and
+        # non-target data
 
         # Filter noise above 100 uV
         threshold = 100.0
@@ -45,7 +46,7 @@ class FileWorker:
             print(data_set.get(data).shape)
         return data_set
 
-    # Data are saved into new ".mat" file
+    # Data are saved into new ".mat" file with same structure as input file
     def save_data(self, new_gen_target, new_gen_non_target, file_name):
         self.data["allTargetData"] = new_gen_target
         self.data["allNonTargetData"] = new_gen_non_target

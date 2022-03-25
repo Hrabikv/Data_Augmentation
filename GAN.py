@@ -6,6 +6,7 @@ from keras.layers import Input
 from keras.models import Model
 from generator import build_generator_mk_2
 from discriminator import build_discriminator
+from DataWork import merge_data
 
 
 def print_graph(data):
@@ -20,12 +21,30 @@ def down_scale(number):
     return number / 100
 
 
+def average_of_signals(window, gen_target_data):
+    average_data = []
+    i = 0
+    new_element = []
+    for element in gen_target_data:
+        if i == 0:
+            new_element = element
+        else:
+            new_element += element
+        if i == window:
+            average_data.append(new_element/i)
+            i = 0
+        i += 1
+    if i > window/2:
+        average_data.append(new_element/i-1)
+    return np.array(average_data)
+
+
 class GAN:
     def __init__(self):
         self.vector_size = 225  # Size of random vector
         self.img_rows = 3  # Number of channels of input data
         self.img_cols = 1200  # number of values in one channel
-        self.img_shape = (self.img_rows, self.img_cols)  # Shape of one signal in ínput data
+        self.img_shape = (self.img_rows, self.img_cols)  # Shape of one signal in input data
 
         optimizer = Adam(0.0002, 0.5)
 
@@ -54,13 +73,17 @@ class GAN:
 
     # Function to determine new signals
     def predict(self, data_len, percentage=200):
+        window = 5
         number_of_new = (data_len * percentage / 100) - data_len
         noise = np.random.normal(0, 1, (int(number_of_new), self.vector_size))
 
-        gen_data = self.generator.predict(noise)
-        gen_data = np.array(gen_data)
-        print(gen_data.shape)
-        return gen_data
+        merge = []
+        for i in range(window):
+            gen_data = self.generator.predict(noise)
+            gen_data = average_of_signals(window, np.array(gen_data))
+            merge = merge_data(merge, gen_data)
+        # print(merge.shape)
+        return merge
 
     # Function which train GAN for number of epochs
     def train(self, epochs, dataset, name, batch_size=64, save_interval=50):
