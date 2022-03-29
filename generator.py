@@ -6,7 +6,7 @@ from keras.layers.advanced_activations import LeakyReLU
 
 
 # function for building the generator layers of first model
-def build_generator(img_shape, gan):
+def build_generator_mk_1(img_shape, gan):
     noise_shape = (gan.vector_size,)
 
     model = Sequential(name="generator")

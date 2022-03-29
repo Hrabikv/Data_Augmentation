@@ -41,9 +41,6 @@ class FileWorker:
         non_target_data = np.array(non_target_data_result)
         data_set = {"target": target_data, "non_target": non_target_data}
 
-        for data in data_set:
-            print(data)
-            print(data_set.get(data).shape)
         return data_set
 
     # Data are saved into new ".mat" file with same structure as input file

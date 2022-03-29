@@ -34,17 +34,17 @@ def print_graph(raw_data):
 # Function which train GAN on input data
 # after training procedure trained GAN will be saved
 # returns two model of GAN after training
-def training(data_set):
+def training(data_set, model):
     # Training of data from "target" class
-    target = GAN()
+    target = GAN(model)
     target.train(epochs=50000, dataset=data_set.get("target"), name="target",
                  batch_size=32, save_interval=1000)
-    target.save_model("target_gan.h5")  # Saving of trained model for "target" class
+    target.save_model("target_gan_mk_{0}.h5".format(model))  # Saving of trained model for "target" class
     # Training of data from "non_target" class"
-    non_target = GAN()
+    non_target = GAN(model)
     non_target.train(epochs=50000, dataset=data_set.get("non_target"), name="non_target",
                      batch_size=32, save_interval=1000)
-    non_target.save_model("non_target_gan.h5")  # Saving of trained model "non_target" class
+    non_target.save_model("non_target_gan_mk_{0}.h5".format(model))  # Saving of trained model "non_target" class
     return target, non_target
 
 
@@ -72,7 +72,6 @@ def predict(file_worker, target, non_target, percentage, data_set):
 def process_args():
     symptoms = {}
     previous = ""
-    symptoms["training"] = "n"
     for arg in sys.argv:
         if previous == "p":
             symptoms["percentage"] = arg
@@ -83,15 +82,20 @@ def process_args():
         if previous == "ng":
             symptoms["non_target"] = arg
             previous = ""
+        if previous == "t":
+            symptoms["training"] = arg
+            previous = ""
 
         if arg == "-t":
-            symptoms["training"] = "y"
+            previous = "t"
         if arg == "-p":
             previous = "p"
         if arg == "-tg":
             previous = "tg"
         if arg == "-ng":
             previous = "ng"
+        if arg == "-m":
+            previous = "m"
 
     return symptoms
 
@@ -107,9 +111,8 @@ if __name__ == '__main__':
     non_target_gan = ""
 
     if args.keys().__contains__("training"):
-        if args["training"] == "y":
-            target_gan, non_target_gan = training(dataset)
-            print("Training is done.")
+        target_gan, non_target_gan = training(dataset, args["training"])
+        print("Training is done.")
 
     if args.keys().__contains__("percentage"):
         if args.keys().__contains__("non_target") & args.keys().__contains__("target"):

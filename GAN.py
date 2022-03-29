@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from keras.optimizers import Adam
 from keras.layers import Input
 from keras.models import Model
-from generator import build_generator_mk_2
+from generator import build_generator_mk_1, build_generator_mk_2
 from discriminator import build_discriminator
 from DataWork import merge_data
 
@@ -40,8 +40,11 @@ def average_of_signals(window, gen_target_data):
 
 
 class GAN:
-    def __init__(self):
-        self.vector_size = 225  # Size of random vector
+    def __init__(self, model="1"):
+        if model == "1":
+            self.vector_size = 1000  # Size of random vector
+        else:
+            self.vector_size = 225  # Size of random vector
         self.img_rows = 3  # Number of channels of input data
         self.img_cols = 1200  # number of values in one channel
         self.img_shape = (self.img_rows, self.img_cols)  # Shape of one signal in input data
@@ -53,7 +56,11 @@ class GAN:
         self.discriminator.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
         # Build and compile the generator
-        self.generator = build_generator_mk_2(self.img_shape, self)
+        if model == "1":
+            self.generator = build_generator_mk_1(self.img_shape, self)
+        else:
+            self.generator = build_generator_mk_2(self.img_shape, self)
+
         self.generator.compile(loss='binary_crossentropy', optimizer=optimizer)
 
         # The generator takes noise as input and generated images
