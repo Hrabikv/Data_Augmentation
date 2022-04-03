@@ -15,6 +15,18 @@ def merge_data(dataset, gen_data):
     return np.array(pom_list)
 
 
+def load_config():
+    args = {}
+    with open("config.txt") as f:
+        lines = f.readlines()
+    for line in lines:
+        if line.startswith("-"):
+            line = line.strip("\n")
+            parts = line.split(" ")
+            args[parts[0]] = parts[1]
+    return args
+
+
 # Class which works with file ".mat" format
 class FileWorker:
     def __init__(self):

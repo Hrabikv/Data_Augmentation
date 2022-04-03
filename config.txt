@@ -1,0 +1,20 @@
+# Parameters for training:
+
+# parameter for training of new model 1/2/n
+# 1 - first model
+# 2 - second model
+# n - without training
+-t n
+
+###############################################
+# Parameters needed for augmenting:
+
+# model which you want used for augmenting 1/2
+-m 2
+# file of target GAN for augmenting
+-tg target_gan_mk_2.h5
+# file of non target GAN for augmenting
+-ng non_target_gan_mk_2.h5
+# parameter to determine how much you want augment dataset
+# it is set in percets
+-p 150

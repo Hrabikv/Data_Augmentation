@@ -40,11 +40,10 @@ def average_of_signals(window, gen_target_data):
 
 
 class GAN:
-    def __init__(self, model="1"):
-        if model == "1":
-            self.vector_size = 1000  # Size of random vector
-        else:
-            self.vector_size = 225  # Size of random vector
+    def __init__(self, model):
+        self.vector_size = None
+        self.set_img_shape(model)
+
         self.img_rows = 3  # Number of channels of input data
         self.img_cols = 1200  # number of values in one channel
         self.img_shape = (self.img_rows, self.img_cols)  # Shape of one signal in input data
@@ -78,9 +77,16 @@ class GAN:
         self.combined = Model(z, valid)
         self.combined.compile(loss='binary_crossentropy', optimizer=optimizer)
 
+    # Function which set shape of random vector
+    def set_img_shape(self, model):
+        if model == "1":
+            self.vector_size = 1000  # Size of random vector
+        else:
+            self.vector_size = 225  # Size of random vector
+
     # Function to determine new signals
     def predict(self, data_len, percentage=200):
-        window = 5
+        window = 50
         number_of_new = (data_len * percentage / 100) - data_len
         noise = np.random.normal(0, 1, (int(number_of_new), self.vector_size))
 
