@@ -34,16 +34,16 @@ def print_graph(raw_data):
 # Function which train GAN on input data
 # after training procedure trained GAN will be saved
 # returns two model of GAN after training
-def training(data_set, model):
+def training(data_set, model, examples):
     # Training of data from "target" class
     target = GAN(model)
     target.train(epochs=50000, dataset=data_set.get("target"), name="target",
-                 batch_size=32, save_interval=1000)
+                 examples=examples, batch_size=32, save_interval=1000)
     target.save_model("target_gan_mk_{0}.h5".format(model))  # Saving of trained model for "target" class
     # Training of data from "non_target" class"
     non_target = GAN(model)
     non_target.train(epochs=50000, dataset=data_set.get("non_target"), name="non_target",
-                     batch_size=32, save_interval=1000)
+                     examples=examples, batch_size=32, save_interval=1000)
     non_target.save_model("non_target_gan_mk_{0}.h5".format(model))  # Saving of trained model "non_target" class
     return target, non_target
 
@@ -60,10 +60,10 @@ def load_model(target_model_name, non_target_model_name, model):
 
 # Function for predictions of data
 # predicted data are merged with input data and saved into new file
-def predict(file_worker, target, non_target, percentage, data_set):
-    gen_target_data = target.predict(len(data_set.get("target")), int(percentage))
+def predict(file_worker, target, non_target, percentage, data_set, window):
+    gen_target_data = target.predict(len(data_set.get("target")), int(percentage), window)
     new_target_data = merge_data(data_set.get("target"), gen_target_data)
-    gen_non_target_data = non_target.predict(len(data_set.get("non_target")), int(percentage))
+    gen_non_target_data = non_target.predict(len(data_set.get("non_target")), int(percentage), window)
     new_non_target_data = merge_data(data_set.get("non_target"), gen_non_target_data)
     file_worker.save_data(new_target_data, new_non_target_data, "VarekaGTNEpochs{0}.mat".format(int(percentage)))
 
@@ -111,15 +111,20 @@ if __name__ == '__main__':
     non_target_gan = ""
     if args.keys().__contains__("-t"):
         if args["-t"] != "n":
-            target_gan, non_target_gan = training(dataset, args["-t"])
+            if args.keys().__contains__("-e"):
+                target_gan, non_target_gan = training(dataset, args["-t"], args["-e"])
+            else:
+                print("Missing argument!")
             print("Training is done.")
+    else:
+        print("Missing argument!")
 
     if args.keys().__contains__("-m"):
         if args.keys().__contains__("-tg") & args.keys().__contains__("-ng"):
             target_gan, non_target_gan = load_model(args["-tg"], args["-ng"], args["-m"])
-
-            predict(file, target_gan, non_target_gan, args["-p"], dataset)
-            print("Predicting is done.")
+            if args.keys().__contains__("-w"):
+                predict(file, target_gan, non_target_gan, args["-p"], dataset, int(args["-w"]))
+                print("Predicting is done.")
         else:
             print("Models of generator are missing!!")
             print("Check README.txt for right parameters!!")

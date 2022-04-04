@@ -17,4 +17,11 @@
 -ng non_target_gan_mk_2.h5
 # parameter to determine how much you want augment dataset
 # it is set in percets
--p 150
+-p 200
+# parameter which determines averaging window
+-w 50
+
+###############################################
+# Optimal parameters
+# saving training progres as images True/False
+-e False

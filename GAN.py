@@ -1,3 +1,5 @@
+import os.path
+
 import keras.models
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,9 +43,11 @@ def average_of_signals(window, gen_target_data):
 
 class GAN:
     def __init__(self, model):
-        self.vector_size = None
-        self.set_img_shape(model)
-
+        self.directory = "training"
+        if model == "1":
+            self.vector_size = 1000  # Size of random vector
+        else:
+            self.vector_size = 225  # Size of random vector
         self.img_rows = 3  # Number of channels of input data
         self.img_cols = 1200  # number of values in one channel
         self.img_shape = (self.img_rows, self.img_cols)  # Shape of one signal in input data
@@ -77,16 +81,8 @@ class GAN:
         self.combined = Model(z, valid)
         self.combined.compile(loss='binary_crossentropy', optimizer=optimizer)
 
-    # Function which set shape of random vector
-    def set_img_shape(self, model):
-        if model == "1":
-            self.vector_size = 1000  # Size of random vector
-        else:
-            self.vector_size = 225  # Size of random vector
-
     # Function to determine new signals
-    def predict(self, data_len, percentage=200):
-        window = 50
+    def predict(self, data_len, percentage=200, window=1):
         number_of_new = (data_len * percentage / 100) - data_len
         noise = np.random.normal(0, 1, (int(number_of_new), self.vector_size))
 
@@ -99,7 +95,14 @@ class GAN:
         return merge
 
     # Function which train GAN for number of epochs
-    def train(self, epochs, dataset, name, batch_size=64, save_interval=50):
+    def train(self, epochs, dataset, name, examples, batch_size=64, save_interval=50):
+        if examples == "True":
+            parent_dir = "./" + self.directory
+            try:
+                path = os.path.join(parent_dir, name)
+                os.makedirs(path)
+            except OSError:
+                print()
 
         for i in range(len(dataset)):
             for j in range(len(dataset[0])):
@@ -146,7 +149,8 @@ class GAN:
 
             if epoch % save_interval == 0:
                 print("%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100 * d_loss[1], g_loss))
-                self.save_data_img(epoch, name)
+                if examples == "True":
+                    self.save_data_img(epoch, name)
 
     # Function for print image of predicted signals
     def save_data_img(self, epoch, name):
@@ -165,7 +169,7 @@ class GAN:
             for j in range(rows):
                 axs[j].plot(gen_images[i][j])
 
-            fig.savefig("training/{0}/P300_{1}_{2}.png".format(name, epoch, i))
+            fig.savefig("{0}/{1}/P300_{2}_{3}.png".format(self.directory, name, epoch, i))
         plt.close()
 
     # Function for saving the GAN
