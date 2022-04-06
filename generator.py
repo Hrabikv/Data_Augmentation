@@ -9,7 +9,7 @@ from keras.layers.advanced_activations import LeakyReLU
 def build_generator_mk_1(img_shape, gan):
     noise_shape = (gan.vector_size,)
 
-    model = Sequential(name="generator")
+    model = Sequential(name="generator_mk_1")
 
     model.add(Dense(1200, input_shape=noise_shape))
     model.add(LeakyReLU(alpha=0.2))
@@ -29,7 +29,7 @@ def build_generator_mk_1(img_shape, gan):
 def build_generator_mk_2(img_shape, gan):
     noise_shape = (gan.vector_size,)
 
-    model = Sequential(name="generator")
+    model = Sequential(name="generator_mk_2")
 
     model.add(Dense(450, input_shape=noise_shape))
     model.add(LeakyReLU(alpha=0.2))

@@ -4,7 +4,7 @@
 # 1 - first model
 # 2 - second model
 # n - without training
--t n
+-t 1
 
 ###############################################
 # Parameters needed for augmenting:
