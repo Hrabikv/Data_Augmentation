@@ -16,15 +16,15 @@
 # file of non target GAN for augmenting
 -ng non_target_gan_mk_1.h5
 # parameter to determine how much you want augment dataset
-# it is set in percets
+# it is set in percents
 -p 150
 # parameter which determines averaging window
 -w 1
 
 ###############################################
 # Optimal parameters
-# saving training progres as images True/False
--e False
+# saving training progress as images True/False
+-e True
 # save input signals as images True/False
 -gi True
 # save output signals as images True/False

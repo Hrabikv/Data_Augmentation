@@ -168,7 +168,12 @@ class GAN:
 
             for j in range(rows):
                 axs[j].plot(gen_images[i][j])
+                axs[j].set_xlabel("ms")
 
+            axs[0].set_ylabel("uV")
+            axs[0].set_title("Fz")
+            axs[1].set_title("Cz")
+            axs[2].set_title("Pz")
             fig.savefig("{0}/{1}/P300_{2}_{3}.png".format(self.directory, name, epoch, i))
         plt.close()
 

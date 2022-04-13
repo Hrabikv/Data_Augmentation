@@ -13,8 +13,18 @@ def print_graph(name, raw_data):
         fig, axs = plt.subplots(1, 3)
 
         axs[0].plot(element[0])
+        axs[0].set_xlabel("ms")
+        axs[0].set_ylabel("uV")
+        axs[0].set_title("Fz")
+
         axs[1].plot(element[1])
+        axs[1].set_xlabel("ms")
+        axs[1].set_title("Cz")
+
         axs[2].plot(element[2])
+        axs[2].set_xlabel("ms")
+        axs[2].set_title("Pz")
+
         fig.savefig("{0}/P300_{1}.png".format(name, index))
         plt.close()
         index += 1
