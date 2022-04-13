@@ -9,3 +9,7 @@
 /non_target_gan_mk_2.h5
 /target_gan_mk_1.h5
 /target_gan_mk_2.h5
+/input_target
+/input_non_target
+/output_target
+/output_non_target

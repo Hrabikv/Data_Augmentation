@@ -1,23 +1,12 @@
+import os
 import sys
 import matplotlib.pyplot as plt
-import numpy as np
 from GAN import GAN
 from DataWork import FileWorker, merge_data, load_config
 
 
 # Function for print graphs from input data
-def print_graph(raw_data):
-    # print(data.shape)
-    '''
-    file_object = open('image.txt', 'a')
-    for element in raw_data["allNonTargetData"]:
-        for array in element:
-            for digit in array:
-                file_object.write('{:.1f} | '.format(digit))
-            file_object.write("\n\n")
-        file_object.write("\n-------------------------------------\n\n")
-    file_object.close()
-    '''
+def print_graph(name, raw_data):
     index = 0
 
     for element in raw_data:
@@ -26,9 +15,11 @@ def print_graph(raw_data):
         axs[0].plot(element[0])
         axs[1].plot(element[1])
         axs[2].plot(element[2])
-        fig.savefig("images/P300_%d.png" % index)
+        fig.savefig("{0}/P300_{1}.png".format(name, index))
         plt.close()
         index += 1
+        if index == 50:
+            break
 
 
 # Function which train GAN on input data
@@ -60,10 +51,28 @@ def load_model(target_model_name, non_target_model_name, model):
 
 # Function for predictions of data
 # predicted data are merged with input data and saved into new file
-def predict(file_worker, target, non_target, percentage, data_set, window):
+def predict(file_worker, target, non_target, percentage, data_set, window, graph):
     gen_target_data = target.predict(len(data_set.get("target")), int(percentage), window)
+    if graph == "True":
+        dir = "output_target"
+        parent_dir = "./"
+        try:
+            path = os.path.join(parent_dir, dir)
+            os.makedirs(path)
+        except OSError:
+            print()
+        print_graph(dir, gen_target_data)
     new_target_data = merge_data(data_set.get("target"), gen_target_data)
     gen_non_target_data = non_target.predict(len(data_set.get("non_target")), int(percentage), window)
+    if graph == "True":
+        dir = "output_non_target"
+        parent_dir = "./"
+        try:
+            path = os.path.join(parent_dir, dir)
+            os.makedirs(path)
+        except OSError:
+            print()
+        print_graph(dir, gen_non_target_data)
     new_non_target_data = merge_data(data_set.get("non_target"), gen_non_target_data)
     file_worker.save_data(new_target_data, new_non_target_data, "VarekaGTNEpochs{0}.mat".format(int(percentage)))
 
@@ -109,6 +118,21 @@ if __name__ == '__main__':
     print(args)
     target_gan = ""
     non_target_gan = ""
+
+    if args.keys().__contains__("-gi") & (args["-gi"] == "True"):
+        input_target = "input_target"
+        input_non_target = "input_non_target"
+        parent_dir = "./"
+        try:
+            path = os.path.join(parent_dir, input_target)
+            os.makedirs(path)
+            path = os.path.join(parent_dir, input_non_target)
+            os.makedirs(path)
+        except OSError:
+            print()
+        print_graph(input_target, dataset.get("target"))
+        print_graph(input_non_target, dataset.get("non_target"))
+
     if args.keys().__contains__("-t"):
         if args["-t"] != "n":
             if args.keys().__contains__("-e"):
@@ -123,7 +147,8 @@ if __name__ == '__main__':
         if args.keys().__contains__("-tg") & args.keys().__contains__("-ng"):
             target_gan, non_target_gan = load_model(args["-tg"], args["-ng"], args["-m"])
             if args.keys().__contains__("-w"):
-                predict(file, target_gan, non_target_gan, args["-p"], dataset, int(args["-w"]))
+                if args.keys().__contains__("-go"):
+                    predict(file, target_gan, non_target_gan, args["-p"], dataset, int(args["-w"]), args["-go"])
                 print("Predicting is done.")
         else:
             print("Models of generator are missing!!")
