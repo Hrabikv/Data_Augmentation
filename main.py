@@ -28,8 +28,6 @@ def print_graph(name, raw_data):
         fig.savefig("{0}/P300_{1}.png".format(name, index))
         plt.close()
         index += 1
-        if index == 50:
-            break
 
 
 # Function which train GAN on input data
