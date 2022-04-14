@@ -1,5 +1,4 @@
 import os
-import sys
 import matplotlib.pyplot as plt
 from GAN import GAN
 from DataWork import FileWorker, merge_data, load_config
@@ -77,38 +76,6 @@ def predict(file_worker, target, non_target, percentage, data_set, window, graph
         print_graph("output_non_target", gen_non_target_data)
     new_non_target_data = merge_data(data_set.get("non_target"), gen_non_target_data)
     file_worker.save_data(new_target_data, new_non_target_data, "VarekaGTNEpochs{0}.mat".format(int(percentage)))
-
-
-# Function which process arguments from command line
-def process_args():
-    symptoms = {}
-    previous = ""
-    for arg in sys.argv:
-        if previous == "p":
-            symptoms["percentage"] = arg
-            previous = ""
-        if previous == "tg":
-            symptoms["target"] = arg
-            previous = ""
-        if previous == "ng":
-            symptoms["non_target"] = arg
-            previous = ""
-        if previous == "t":
-            symptoms["training"] = arg
-            previous = ""
-
-        if arg == "-t":
-            previous = "t"
-        if arg == "-p":
-            previous = "p"
-        if arg == "-tg":
-            previous = "tg"
-        if arg == "-ng":
-            previous = "ng"
-        if arg == "-m":
-            previous = "m"
-
-    return symptoms
 
 
 # Main function of program
