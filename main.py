@@ -7,6 +7,12 @@ from DataWork import FileWorker, merge_data, load_config
 
 # Function for print graphs from input data
 def print_graph(name, raw_data):
+    print("Printing {0}".format(name))
+    try:
+        os.makedirs(os.path.join("./", name))
+    except OSError:
+        print()
+
     index = 0
 
     for element in raw_data:
@@ -28,6 +34,8 @@ def print_graph(name, raw_data):
         fig.savefig("{0}/P300_{1}.png".format(name, index))
         plt.close()
         index += 1
+        if index > 100:
+            break
 
 
 # Function which train GAN on input data
@@ -62,25 +70,11 @@ def load_model(target_model_name, non_target_model_name, model):
 def predict(file_worker, target, non_target, percentage, data_set, window, graph):
     gen_target_data = target.predict(len(data_set.get("target")), int(percentage), window)
     if graph == "True":
-        dir = "output_target"
-        parent_dir = "./"
-        try:
-            path = os.path.join(parent_dir, dir)
-            os.makedirs(path)
-        except OSError:
-            print()
-        print_graph(dir, gen_target_data)
+        print_graph("output_target", gen_target_data)
     new_target_data = merge_data(data_set.get("target"), gen_target_data)
     gen_non_target_data = non_target.predict(len(data_set.get("non_target")), int(percentage), window)
     if graph == "True":
-        dir = "output_non_target"
-        parent_dir = "./"
-        try:
-            path = os.path.join(parent_dir, dir)
-            os.makedirs(path)
-        except OSError:
-            print()
-        print_graph(dir, gen_non_target_data)
+        print_graph("output_non_target", gen_non_target_data)
     new_non_target_data = merge_data(data_set.get("non_target"), gen_non_target_data)
     file_worker.save_data(new_target_data, new_non_target_data, "VarekaGTNEpochs{0}.mat".format(int(percentage)))
 
@@ -128,18 +122,8 @@ if __name__ == '__main__':
     non_target_gan = ""
 
     if args.keys().__contains__("-gi") & (args["-gi"] == "True"):
-        input_target = "input_target"
-        input_non_target = "input_non_target"
-        parent_dir = "./"
-        try:
-            path = os.path.join(parent_dir, input_target)
-            os.makedirs(path)
-            path = os.path.join(parent_dir, input_non_target)
-            os.makedirs(path)
-        except OSError:
-            print()
-        print_graph(input_target, dataset.get("target"))
-        print_graph(input_non_target, dataset.get("non_target"))
+        print_graph("input_target", dataset.get("target"))
+        print_graph("input_non_target", dataset.get("non_target"))
 
     if args.keys().__contains__("-t"):
         if args["-t"] != "n":

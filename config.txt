@@ -10,11 +10,11 @@
 # Parameters needed for augmenting:
 
 # model which you want used for augmenting 1/2
--m 1
+-m 2
 # file of target GAN for augmenting
--tg target_gan_mk_1.h5
+-tg target_gan_mk_2.h5
 # file of non target GAN for augmenting
--ng non_target_gan_mk_1.h5
+-ng non_target_gan_mk_2.h5
 # parameter to determine how much you want augment dataset
 # it is set in percents
 -p 150
@@ -24,8 +24,8 @@
 ###############################################
 # Optimal parameters
 # saving training progress as images True/False
--e True
+-e False
 # save input signals as images True/False
--gi True
+-gi False
 # save output signals as images True/False
 -go True

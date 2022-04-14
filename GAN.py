@@ -33,11 +33,11 @@ def average_of_signals(window, gen_target_data):
         else:
             new_element += element
         if i == window:
-            average_data.append(new_element/i)
+            average_data.append(new_element / i)
             i = 0
         i += 1
-    if i > window/2:
-        average_data.append(new_element/i-1)
+    if i > window / 2:
+        average_data.append(new_element / i - 1)
     return np.array(average_data)
 
 
@@ -88,9 +88,15 @@ class GAN:
 
         merge = []
         for i in range(window):
-            gen_data = self.generator.predict(noise)
-            gen_data = average_of_signals(window, np.array(gen_data))
-            merge = merge_data(merge, gen_data)
+            for j in range(int(number_of_new)):
+                noise = np.random.normal(0, 1, (1, self.vector_size))
+                gen_data = self.generator.predict(noise)
+                for o in range(len(gen_data)):
+                    for n in range(len(gen_data[0])):
+                        for k in range(len(gen_data[0][0])):
+                            gen_data[o][n][k] = up_scale(gen_data[o][n][k])
+                gen_data = average_of_signals(window, np.array(gen_data))
+                merge = merge_data(merge, gen_data)
         # print(merge.shape)
         return merge
 
