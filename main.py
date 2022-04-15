@@ -67,10 +67,12 @@ def load_model(target_model_name, non_target_model_name, model):
 # Function for predictions of data
 # predicted data are merged with input data and saved into new file
 def predict(file_worker, target, non_target, percentage, data_set, window, graph):
+    print("Predicting target class.")
     gen_target_data = target.predict(len(data_set.get("target")), int(percentage), window)
     if graph == "True":
         print_graph("output_target", gen_target_data)
     new_target_data = merge_data(data_set.get("target"), gen_target_data)
+    print("Predicting non target class.")
     gen_non_target_data = non_target.predict(len(data_set.get("non_target")), int(percentage), window)
     if graph == "True":
         print_graph("output_non_target", gen_non_target_data)

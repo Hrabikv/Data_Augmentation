@@ -41,7 +41,6 @@ def average_of_signals(window, gen_target_data):
             i += 1
         else:
             new_element += element
-            print("tada")
             i += 1
         if i == window:
             average_data.append(new_element / i)
