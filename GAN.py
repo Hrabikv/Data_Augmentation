@@ -15,12 +15,20 @@ def print_graph(data):
     print(data.shape)
 
 
-def up_scale(number):
-    return number * 100
+def up_scale(gen_data):
+    for o in range(len(gen_data)):
+        for n in range(len(gen_data[0])):
+            for k in range(len(gen_data[0][0])):
+                gen_data[o][n][k] = gen_data[o][n][k] * 100
+    return gen_data
 
 
-def down_scale(number):
-    return number / 100
+def down_scale(gen_data):
+    for o in range(len(gen_data)):
+        for n in range(len(gen_data[0])):
+            for k in range(len(gen_data[0][0])):
+                gen_data[o][n][k] = gen_data[o][n][k] / 100
+    return gen_data
 
 
 def average_of_signals(window, gen_target_data):
@@ -30,12 +38,15 @@ def average_of_signals(window, gen_target_data):
     for element in gen_target_data:
         if i == 0:
             new_element = element
+            i += 1
         else:
             new_element += element
+            print("tada")
+            i += 1
         if i == window:
             average_data.append(new_element / i)
             i = 0
-        i += 1
+
     if i > window / 2:
         average_data.append(new_element / i - 1)
     return np.array(average_data)
@@ -85,18 +96,14 @@ class GAN:
     def predict(self, data_len, percentage=200, window=1):
         number_of_new = (data_len * percentage / 100) - data_len
         noise = np.random.normal(0, 1, (int(number_of_new), self.vector_size))
-
         merge = []
         for i in range(window):
-            for j in range(int(number_of_new)):
-                noise = np.random.normal(0, 1, (1, self.vector_size))
-                gen_data = self.generator.predict(noise)
-                for o in range(len(gen_data)):
-                    for n in range(len(gen_data[0])):
-                        for k in range(len(gen_data[0][0])):
-                            gen_data[o][n][k] = up_scale(gen_data[o][n][k])
-                gen_data = average_of_signals(window, np.array(gen_data))
-                merge = merge_data(merge, gen_data)
+            gen_data = self.generator.predict(noise)
+            gen_data = average_of_signals(window, np.array(gen_data))
+            merge = merge_data(merge, gen_data)
+            print("{0} from {1}".format(i+1, window))
+
+        merge = up_scale(merge)
         # print(merge.shape)
         return merge
 
@@ -110,10 +117,7 @@ class GAN:
             except OSError:
                 print()
 
-        for i in range(len(dataset)):
-            for j in range(len(dataset[0])):
-                for k in range(len(dataset[0][0])):
-                    dataset[i][j][k] = down_scale(dataset[i][j][k])
+        dataset = down_scale(dataset)
 
         half_batch = int(batch_size / 2)
 
@@ -164,10 +168,7 @@ class GAN:
         noise = np.random.normal(0, 1, (rows, self.vector_size))
         gen_images = self.generator.predict(noise)
 
-        for i in range(len(gen_images)):
-            for j in range(len(gen_images[0])):
-                for k in range(len(gen_images[0][0])):
-                    gen_images[i][j][k] = up_scale(gen_images[i][j][k])
+        gen_images = up_scale(gen_images)
 
         for i in range(rows):
             fig, axs = plt.subplots(1, rows)
