@@ -1,5 +1,7 @@
 import os
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import numpy as np
 from GAN import GAN
 from DataWork import FileWorker, merge_data, load_config
 
@@ -14,21 +16,28 @@ def print_graph(name, raw_data):
 
     index = 0
 
+    x = []
+    for i in range(-200, 1000):
+        x.append(i)
+
     for element in raw_data:
         fig, axs = plt.subplots(1, 3)
 
-        axs[0].plot(element[0])
+        axs[0].plot(x, element[0])
         axs[0].set_xlabel("ms")
         axs[0].set_ylabel("uV")
         axs[0].set_title("Fz")
+        axs[0].set_xticks(np.arange(-200, 1050, 500))
 
-        axs[1].plot(element[1])
+        axs[1].plot(x, element[1])
         axs[1].set_xlabel("ms")
         axs[1].set_title("Cz")
+        axs[1].set_xticks(np.arange(-200, 1050, 500))
 
-        axs[2].plot(element[2])
+        axs[2].plot(x, element[2])
         axs[2].set_xlabel("ms")
         axs[2].set_title("Pz")
+        axs[2].set_xticks(np.arange(-200, 1050, 500))
 
         fig.savefig("{0}/P300_{1}.png".format(name, index))
         plt.close()

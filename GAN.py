@@ -169,12 +169,17 @@ class GAN:
 
         gen_images = up_scale(gen_images)
 
+        x = []
+        for i in range(-200, 1000):
+            x.append(i)
+
         for i in range(rows):
             fig, axs = plt.subplots(1, rows)
 
             for j in range(rows):
-                axs[j].plot(gen_images[i][j])
+                axs[j].plot(x, gen_images[i][j])
                 axs[j].set_xlabel("ms")
+                axs[j].set_xticks(np.arange(-200, 1050, 500))
 
             axs[0].set_ylabel("uV")
             axs[0].set_title("Fz")
