@@ -1,4 +1,4 @@
-# Parameters for training:
+# Parameters needed for training:
 
 # parameter for training of new model 1/2/n
 # 1 - first model
@@ -9,8 +9,11 @@
 ###############################################
 # Parameters needed for augmenting:
 
-# model which you want used for augmenting 1/2
--m 2
+# model which you want used for augmenting 1/2/n
+# 1 - first model
+# 2 - second model
+# n - without generating
+-m n
 # file of target GAN for augmenting
 -tg target_gan_mk_2.h5
 # file of non target GAN for augmenting
@@ -23,9 +26,9 @@
 
 ###############################################
 # Optimal parameters
-# saving training progress as images True/False
--e False
-# save input signals as images True/False
--gi False
-# save output signals as images True/False
--go True
+# saving training progress as images T(True)/F(False)
+-e F
+# save input signals as images T(True)/F(False)
+-gi F
+# save output signals as images T(True)/F(False)
+-go T

@@ -1,6 +1,5 @@
 import os
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 import numpy as np
 from GAN import GAN
 from DataWork import FileWorker, merge_data, load_config
@@ -42,8 +41,6 @@ def print_graph(name, raw_data):
         fig.savefig("{0}/P300_{1}.png".format(name, index))
         plt.close()
         index += 1
-        if index > 100:
-            break
 
 
 # Function which train GAN on input data
@@ -78,12 +75,11 @@ def load_model(target_model_name, non_target_model_name, model):
 def predict(file_worker, target, non_target, percentage, data_set, window, graph):
     print("Predicting target class.")
     gen_target_data = target.predict(len(data_set.get("target")), int(percentage), window)
-    if graph == "True":
-        print_graph("output_target", gen_target_data)
     new_target_data = merge_data(data_set.get("target"), gen_target_data)
     print("Predicting non target class.")
     gen_non_target_data = non_target.predict(len(data_set.get("non_target")), int(percentage), window)
-    if graph == "True":
+    if graph == "T":
+        print_graph("output_target", gen_target_data)
         print_graph("output_non_target", gen_non_target_data)
     new_non_target_data = merge_data(data_set.get("non_target"), gen_non_target_data)
     file_worker.save_data(new_target_data, new_non_target_data, "VarekaGTNEpochs{0}.mat".format(int(percentage)))
@@ -95,11 +91,11 @@ if __name__ == '__main__':
     args = load_config()
     file = FileWorker()
     dataset = file.load_data()
-    print(args)
+
     target_gan = ""
     non_target_gan = ""
 
-    if args.keys().__contains__("-gi") & (args["-gi"] == "True"):
+    if args.keys().__contains__("-gi") & (args["-gi"] == "T"):
         print_graph("input_target", dataset.get("target"))
         print_graph("input_non_target", dataset.get("non_target"))
 
@@ -114,12 +110,15 @@ if __name__ == '__main__':
         print("Missing argument!")
 
     if args.keys().__contains__("-m"):
-        if args.keys().__contains__("-tg") & args.keys().__contains__("-ng"):
-            target_gan, non_target_gan = load_model(args["-tg"], args["-ng"], args["-m"])
-            if args.keys().__contains__("-w"):
-                if args.keys().__contains__("-go"):
-                    predict(file, target_gan, non_target_gan, args["-p"], dataset, int(args["-w"]), args["-go"])
-                print("Predicting is done.")
-        else:
-            print("Models of generator are missing!!")
-            print("Check README.txt for right parameters!!")
+        if args["-m"] == "1" or args["-m"] == "2":
+            if args.keys().__contains__("-tg") & args.keys().__contains__("-ng"):
+                target_gan, non_target_gan = load_model(args["-tg"], args["-ng"], args["-m"])
+                if args.keys().__contains__("-w"):
+                    if args.keys().__contains__("-go"):
+                        predict(file, target_gan, non_target_gan, args["-p"], dataset, int(args["-w"]), args["-go"])
+                    print("Predicting is done.")
+            else:
+                print("Models of generator are missing!!")
+                print("Check README.txt for right parameters!!")
+
+    print("Everything is done. Exiting the project.")

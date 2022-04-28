@@ -108,7 +108,7 @@ class GAN:
 
     # Function which train GAN for number of epochs
     def train(self, epochs, dataset, name, examples, batch_size=64, save_interval=50):
-        if examples == "True":
+        if examples == "T":
             parent_dir = "./" + self.directory
             try:
                 path = os.path.join(parent_dir, name)
